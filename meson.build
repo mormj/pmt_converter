@@ -26,4 +26,6 @@ pmt_converter_dep = declare_dependency(include_directories : 'include',
 					   link_with : pmt_converter_lib,
                        dependencies : pmt_dep)
 
+meson.override_dependency('pmt_converter', pmt_converter_dep)
+
 subdir('tests')
