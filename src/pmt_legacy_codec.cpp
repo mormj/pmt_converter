@@ -282,31 +282,31 @@ std::vector<uint8_t> serialize_uniform_vector(const std::vector<T>& vec) {
 }
 
 
-std::vector<uint8_t> serialize_map(const map_t& m) {
-    std::vector<uint8_t> result;
+// std::vector<uint8_t> serialize_map(const map_t& m) {
+//     std::vector<uint8_t> result;
 
-    // Legacy tag for map might be something like 0x13 — adjust as needed
-    result.push_back(0x13); 
+//     // Legacy tag for map might be something like 0x13 — adjust as needed
+//     result.push_back(0x13); 
 
-    // Write number of elements (big-endian uint32)
-    uint32_t size = static_cast<uint32_t>(m.size());
-    result.push_back((size >> 24) & 0xff);
-    result.push_back((size >> 16) & 0xff);
-    result.push_back((size >> 8) & 0xff);
-    result.push_back(size & 0xff);
+//     // Write number of elements (big-endian uint32)
+//     uint32_t size = static_cast<uint32_t>(m.size());
+//     result.push_back((size >> 24) & 0xff);
+//     result.push_back((size >> 16) & 0xff);
+//     result.push_back((size >> 8) & 0xff);
+//     result.push_back(size & 0xff);
 
-    for (const auto& [key, value] : m) {
-        // Serialize key as symbol or string
-        std::vector<uint8_t> key_data = serialize_string_key(key);  // define this
-        result.insert(result.end(), key_data.begin(), key_data.end());
+//     for (const auto& [key, value] : m) {
+//         // Serialize key as symbol or string
+//         std::vector<uint8_t> key_data = serialize_string_key(key);  // define this
+//         result.insert(result.end(), key_data.begin(), key_data.end());
 
-        // Serialize value
-        std::vector<uint8_t> value_data = serialize_to_legacy(value);
-        result.insert(result.end(), value_data.begin(), value_data.end());
-    }
+//         // Serialize value
+//         std::vector<uint8_t> value_data = serialize_to_legacy(value);
+//         result.insert(result.end(), value_data.begin(), value_data.end());
+//     }
 
-    return result;
-}
+//     return result;
+// }
 
 
 // --- Serialization: basic types ---
@@ -345,7 +345,7 @@ std::vector<uint8_t> serialize_to_legacy(const pmtv::pmt& obj) {
             }
         }      
         if constexpr (std::is_same_v<T, map_t>) {
-            throw std::runtime_error("No Legacy serialization defined for pmt::dict")
+            throw std::runtime_error("No Legacy serialization defined for pmt::dict");
         }
 
         return out;
