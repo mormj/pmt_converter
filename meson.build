@@ -29,3 +29,18 @@ pmt_converter_dep = declare_dependency(include_directories : 'include',
 meson.override_dependency('pmt_converter', pmt_converter_dep)
 
 subdir('tests')
+
+install_subdir(
+  'include/pmt_converter',
+  install_dir: get_option('includedir')
+)
+
+pkgconfig = import('pkgconfig')
+pkgconfig.generate(
+  pmt_converter_lib,
+  name : 'pmt_converter',
+  description : 'GR3 to GR4 PMT Conversion Utility',
+  version : meson.project_version(),
+  subdirs: 'pmt_converter',
+)
+
