@@ -1,7 +1,7 @@
 project('pmt_converter', 'cpp', 
   version : '0.0.0.1',
   license : 'BSD3',
-  default_options : ['cpp_std=c++20'])
+  default_options : ['cpp_std=c++23'])
 
 libpmtv = subproject('pmt')
 gtest_dep = dependency('gtest', main : true, version : '>=1.10')

@@ -70,15 +70,15 @@ namespace {
     }
 
     TEST(PmtLegacyCodecTest, SerializeUniformVector) {
-        pmtv::pmt obj = std::vector<uint8_t>(4,222);
+        pmtv::pmt obj = pmtv::Tensor<uint8_t>(4,222);
         std::vector<uint8_t> serialized = legacy_pmt::serialize_to_legacy(obj);
         EXPECT_EQ(serialized, legacy_u8vector_data);
 
-        obj = std::vector<float>(4,-987.654321);
+        obj = pmtv::Tensor<float>(4,-987.654321);
         std::vector<uint8_t> serialized_f32 = legacy_pmt::serialize_to_legacy(obj);
         EXPECT_EQ(serialized_f32, legacy_f32vector_data);
 
-        obj = std::vector<std::complex<float>>(4,{-987.654321,123.456789});
+        obj = pmtv::Tensor<std::complex<float>>(4,{-987.654321,123.456789});
         std::vector<uint8_t> serialized_c32 = legacy_pmt::serialize_to_legacy(obj);
         EXPECT_EQ(serialized_c32, legacy_c32vector_data);        
 

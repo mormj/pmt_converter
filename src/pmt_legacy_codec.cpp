@@ -281,7 +281,28 @@ std::vector<uint8_t> serialize_uniform_vector(const std::vector<T>& vec) {
     return out;
 }
 
+template <typename T>
+std::vector<uint8_t> serialize_uniform_vector(const pmtv::Tensor<T>& vec) {
+    std::vector<uint8_t> out;
 
+    write_u8(out, static_cast<uint8_t>(legacy_tag::LEGACY_PMT_UNIFORM_VECTOR));
+    write_u8(out, static_cast<uint8_t>(legacy_uniform_type_for<T>()));
+    write_u32(out, static_cast<uint32_t>(vec.size()));
+    // Padding
+    write_u8(out, static_cast<uint8_t>(1));
+    write_u8(out, static_cast<uint8_t>(0));
+
+    // out.insert(out.end(),
+    //        reinterpret_cast<const uint8_t*>(vec.data()),
+    //        reinterpret_cast<const uint8_t*>(vec.data()) + vec.size() * sizeof(T)); 
+
+    for (const auto& val : vec) {
+        serialize_to_big_endian(val, out);
+    }
+
+
+    return out;
+}
 // std::vector<uint8_t> serialize_map(const map_t& m) {
 //     std::vector<uint8_t> result;
 
@@ -548,62 +569,63 @@ pmtv::pmt deserialize_from_legacy(const uint8_t* data, size_t size) {
                 case legacy_uniform_type::U8: {
                     using VTYPE = uint8_t;
                     std::vector<VTYPE> vec = create_vector_from_big_endian<VTYPE>(ptr, len);
-                    ret = vec; break;
+                    ret = pmtv::Tensor<VTYPE>(vec);
+                    break;
                 }
                 case legacy_uniform_type::S8: {
                     using VTYPE = int8_t;
                     std::vector<VTYPE> vec = create_vector_from_big_endian<VTYPE>(ptr, len);
-                    ret = vec; break;
+                    ret = pmtv::Tensor<VTYPE>(vec); break;
                 }
                 case legacy_uniform_type::U16: {
                     using VTYPE = uint16_t;
                     std::vector<VTYPE> vec = create_vector_from_big_endian<VTYPE>(ptr, len);
-                    ret = vec; break;
+                    ret = pmtv::Tensor<VTYPE>(vec); break;
                 }
                 case legacy_uniform_type::S16: {
                     using VTYPE = int16_t;
                     std::vector<VTYPE> vec = create_vector_from_big_endian<VTYPE>(ptr, len);
-                    ret = vec; break;
+                    ret = pmtv::Tensor<VTYPE>(vec); break;
                 }
                 case legacy_uniform_type::U32: {
                     using VTYPE = uint32_t;
                     std::vector<VTYPE> vec = create_vector_from_big_endian<VTYPE>(ptr, len);
-                    ret = vec; break;
+                    ret = pmtv::Tensor<VTYPE>(vec); break;
                 }
                 case legacy_uniform_type::S32: {
                     using VTYPE = int32_t;
                     std::vector<VTYPE> vec = create_vector_from_big_endian<VTYPE>(ptr, len);
-                    ret = vec; break;
+                    ret = pmtv::Tensor<VTYPE>(vec); break;
                 }
                 case legacy_uniform_type::U64: {
                     using VTYPE = uint64_t;
                     std::vector<VTYPE> vec = create_vector_from_big_endian<VTYPE>(ptr, len);
-                    ret = vec; break;
+                    ret = pmtv::Tensor<VTYPE>(vec); break;
                 }
                 case legacy_uniform_type::S64: {
                     using VTYPE = int64_t;
                     std::vector<VTYPE> vec = create_vector_from_big_endian<VTYPE>(ptr, len);
-                    ret = vec; break;
+                    ret = pmtv::Tensor<VTYPE>(vec); break;
                 }                                                                                                                           
                 case legacy_uniform_type::F32: {
                     using VTYPE = float;
                     std::vector<VTYPE> vec = create_vector_from_big_endian<VTYPE>(ptr, len);
-                    ret = vec; break;
+                    ret = pmtv::Tensor<VTYPE>(vec); break;
                 }    
                 case legacy_uniform_type::F64: {
                     using VTYPE = double;
                     std::vector<VTYPE> vec = create_vector_from_big_endian<VTYPE>(ptr, len);
-                    ret = vec; break;
+                    ret = pmtv::Tensor<VTYPE>(vec); break;
                 }   
                 case legacy_uniform_type::C32: {
                     using VTYPE = std::complex<float>;
                     std::vector<VTYPE> vec = create_vector_from_big_endian<VTYPE>(ptr, len);
-                    ret = vec; break;
+                    ret = pmtv::Tensor<VTYPE>(vec); break;
                 }    
                 case legacy_uniform_type::C64: {
                     using VTYPE = std::complex<double>;
                     std::vector<VTYPE> vec = create_vector_from_big_endian<VTYPE>(ptr, len);
-                    ret = vec; break;
+                    ret = pmtv::Tensor<VTYPE>(vec); break;
                 }             
                 default: {
                     throw std::runtime_error("Unsupported or unknown legacy PMT uniform vector tag");
